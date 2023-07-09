@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bjanmelvin.products.MainApplication
 import com.bjanmelvin.products.R
@@ -37,6 +39,12 @@ class FragCatalog : Fragment(R.layout.frag_catalog) {
 
     }
 
+    override fun onStart() {
+        super.onStart()
+        initToolbar()
+    }
+
+
     private fun initViews() {
         val list = mBinding.recvProducts
         list.layoutManager = LinearLayoutManager(context)
@@ -64,6 +72,11 @@ class FragCatalog : Fragment(R.layout.frag_catalog) {
         }
     }
 
+    private fun initToolbar(){
+        (activity as AppCompatActivity?)!!.supportActionBar!!.title = "Products"
+        (activity as AppCompatActivity?)!!.supportActionBar!!.setDisplayHomeAsUpEnabled(false)
+    }
+
     private val mOnLoadMoreCallback: RecvAdapter.LoadMoreCallback = object : RecvAdapter.LoadMoreCallback {
         override fun onLoadMore(size: Int) {
             lifecycleScope.launch {
@@ -74,13 +87,10 @@ class FragCatalog : Fragment(R.layout.frag_catalog) {
 
     private val mOnItemClickListener: RecvAdapter.ItemClickListener = object : RecvAdapter.ItemClickListener {
         override fun onItemClick(product: Product) {
-            Log.e("asdas",product.title)
+//            findNavController().navigate()
+            findNavController().navigate(FragCatalogDirections.actionFragCatalogToFragDetails(product))
         }
 
-    }
-
-    companion object {
-        fun newInstance() = FragCatalog()
     }
 
 }

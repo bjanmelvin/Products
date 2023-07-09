@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt' // Kotlin Annotation Processing Tool
+    id "androidx.navigation.safeargs.kotlin" version '2.4.1' // Navigation Component SafeArgs
+    id 'kotlin-parcelize' // For Parcelization
 }
 
 android {

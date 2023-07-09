@@ -1,13 +1,16 @@
 package com.bjanmelvin.products.models
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
+import kotlinx.parcelize.Parcelize
 
 @Entity(tableName = "products")
+@Parcelize
 data class Product(
     @PrimaryKey
     @SerializedName("id")
@@ -42,7 +45,7 @@ data class Product(
 
     @SerializedName("images")
     val images: List<String>
-) {
+):Parcelable {
     class ImagesTypeConverter {
         @TypeConverter
         fun fromString(value: String): List<String> {
