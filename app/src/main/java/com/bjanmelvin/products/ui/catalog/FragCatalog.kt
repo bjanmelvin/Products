@@ -3,7 +3,6 @@ package com.bjanmelvin.products.ui.catalog
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.View.OnClickListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -31,11 +30,11 @@ class FragCatalog : Fragment(R.layout.frag_catalog) {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
         initViews()
         observeViews()
 
-        initCatalog()
+        if(mViewModel.productList.value == null)
+            initCatalog()
 
     }
 
@@ -44,13 +43,14 @@ class FragCatalog : Fragment(R.layout.frag_catalog) {
         initToolbar()
     }
 
-
     private fun initViews() {
         val list = mBinding.recvProducts
         list.layoutManager = LinearLayoutManager(context)
-        mRecvAdapter = RecvAdapter(mutableListOf(),
+        mRecvAdapter = RecvAdapter(
+            mutableListOf(),
             loadMoreCallback = mOnLoadMoreCallback,
-            itemClickListener = mOnItemClickListener)
+            itemClickListener = mOnItemClickListener
+        )
         list.adapter = mRecvAdapter
     }
 
@@ -58,7 +58,7 @@ class FragCatalog : Fragment(R.layout.frag_catalog) {
         mViewModel.productList.observe(viewLifecycleOwner, Observer {
             mRecvAdapter.removeLoading()
             mRecvAdapter.updateList(it.toMutableList())
-            if(it.size == MainApplication.CATALOG_DISPLAY_LIMIT){
+            if ((it.size % MainApplication.CATALOG_DISPLAY_LIMIT) == 0) {
                 mRecvAdapter.addLoading()
             }
             mRecvAdapter.notifyDataSetChanged()
@@ -66,31 +66,37 @@ class FragCatalog : Fragment(R.layout.frag_catalog) {
         })
     }
 
-    private fun initCatalog(){
+    private fun initCatalog() {
         lifecycleScope.launch {
             mViewModel.loadCatalogData()
         }
     }
 
-    private fun initToolbar(){
+    private fun initToolbar() {
         (activity as AppCompatActivity?)!!.supportActionBar!!.title = "Products"
         (activity as AppCompatActivity?)!!.supportActionBar!!.setDisplayHomeAsUpEnabled(false)
     }
 
-    private val mOnLoadMoreCallback: RecvAdapter.LoadMoreCallback = object : RecvAdapter.LoadMoreCallback {
-        override fun onLoadMore(size: Int) {
-            lifecycleScope.launch {
-                mViewModel.loadmoreCatalogData(size)
+    private val mOnLoadMoreCallback: RecvAdapter.LoadMoreCallback =
+        object : RecvAdapter.LoadMoreCallback {
+            override fun onLoadMore(size: Int) {
+                lifecycleScope.launch {
+                    mViewModel.loadmoreCatalogData(size)
+                }
             }
         }
-    }
 
-    private val mOnItemClickListener: RecvAdapter.ItemClickListener = object : RecvAdapter.ItemClickListener {
-        override fun onItemClick(product: Product) {
+    private val mOnItemClickListener: RecvAdapter.ItemClickListener =
+        object : RecvAdapter.ItemClickListener {
+            override fun onItemClick(product: Product) {
 //            findNavController().navigate()
-            findNavController().navigate(FragCatalogDirections.actionFragCatalogToFragDetails(product))
-        }
+                findNavController().navigate(
+                    FragCatalogDirections.actionFragCatalogToFragDetails(
+                        product
+                    )
+                )
+            }
 
-    }
+        }
 
 }

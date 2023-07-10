@@ -16,17 +16,19 @@ class FragCatalogViewModel : ViewModel() {
         repository = ProductRepository(apiService, productDao)
     }
 
-    val productList: MutableLiveData<List<Product>> = MutableLiveData()
+    val productList: MutableLiveData<MutableList<Product>> = MutableLiveData()
 
     suspend fun loadCatalogData(){
         repository.getProductData().collect { dataList ->
-            productList.value = dataList
+            productList.value = dataList.toMutableList()
         }
     }
 
     suspend fun loadmoreCatalogData(skip: Int){
         repository.getProductData(skip = skip).collect { dataList ->
-            productList.value = dataList
+            val products = productList.value
+            products?.addAll(dataList)
+            productList.value = products
         }
     }
 }

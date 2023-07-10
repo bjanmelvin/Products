@@ -12,7 +12,8 @@
         tools:layout="@layout/frag_catalog">
         <action
             android:id="@+id/action_fragCatalog_to_fragDetails"
-            app:destination="@id/fragDetails" >
+            app:destination="@id/fragDetails"
+            app:popUpToInclusive="true">
             <argument
                 android:name="itemProduct"
                 app:argType="com.bjanmelvin.products.models.Product" />

@@ -23,7 +23,7 @@ class RecvAdapter(
 
     private var isLoading = false
 
-    private val mMasterList: MutableList<Item> = mutableListOf()
+    private var mMasterList: MutableList<Item> = mutableListOf()
 
     init {
         updateList(products)
@@ -67,6 +67,7 @@ class RecvAdapter(
     }
 
     fun updateList(list: MutableList<Product>){
+        mMasterList = mutableListOf()
         list.forEach {
             mMasterList.add(Item(it))
         }
@@ -74,7 +75,6 @@ class RecvAdapter(
 
     fun addLoading() {
         isLoading = true
-        mMasterList.add(Item(null))
         notifyItemInserted(mMasterList.size - 1)
     }
 
@@ -82,7 +82,6 @@ class RecvAdapter(
         isLoading = false
         val position = mMasterList.size - 1
         if (position >= 0) {
-            mMasterList.removeAt(position)
             notifyItemRemoved(position)
         }
     }
